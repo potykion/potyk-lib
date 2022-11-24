@@ -1,7 +1,9 @@
+import operator
+from functools import partial
 from itertools import groupby
 from typing import Iterable, TypeVar, Optional, Union, Callable, Mapping, List
 
-__all__ = ['first', 'groupby_as_dict']
+__all__ = ['first', 'groupby_as_dict', 'all_eq']
 
 T = TypeVar('T')
 K = TypeVar('K')
@@ -50,3 +52,20 @@ def groupby_as_dict(
         k: first(g) if flat else list(g)
         for k, g in groupby(iter_, key_func)
     }
+
+
+def all_eq(iter_):
+    """
+    >>> all_eq(iter([3, 3, 3]))
+    True
+    >>> all_eq(iter([1, 1, 2]))
+    False
+    >>> all_eq(iter([1, 2, 1]))
+    False
+    >>> all_eq(iter([1, 2, 1, 1]))
+    False
+    """
+    try:
+        return all(map(partial(operator.eq, next(iter_)), iter_))
+    except StopIteration:
+        return True
