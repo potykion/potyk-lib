@@ -9,9 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: pipx install poetry
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - uses: abatilo/actions-poetry@v2
+          cache: 'poetry'
       - run: poetry install
       - run: poetry run pytest
