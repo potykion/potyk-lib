@@ -1,6 +1,7 @@
 from functools import reduce
+from potyk_lib.iter_.iter_ import flat_map, flatten
 
-__all__ = ['list_wo_none', 'as_list', 'unique', 'unique_by']
+__all__ = ['list_wo_none', 'as_list', 'unique', 'unique_by', 'flat_map_list', 'flatten_list']
 
 
 def list_wo_none(iter_):
@@ -44,3 +45,19 @@ def unique_by(iter_, attr_):
         iter_,
         ([], set())
     )[0]
+
+
+def flat_map_list(callable_, iter_):
+    """
+    >>> flat_map_list(lambda i: [i, i], range(2))
+    [0, 0, 1, 1]
+    """
+    return list(flat_map(callable_, iter_))
+
+
+def flatten_list(iter_):
+    """
+    >>> flatten_list([[1, 2], [3, 4]])
+    [1, 2, 3, 4]
+    """
+    return list(flatten(iter_))

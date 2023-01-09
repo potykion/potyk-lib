@@ -1,4 +1,4 @@
-__all__ = ['pipe']
+__all__ = ['pipe', 'flow']
 
 
 def pipe(*callables):
@@ -15,3 +15,6 @@ def pipe(*callables):
             return val
 
     return _apply
+
+
+flow = pipe

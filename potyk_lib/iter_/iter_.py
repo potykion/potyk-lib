@@ -1,9 +1,10 @@
+import itertools
 import operator
 from functools import partial
 from itertools import groupby
 from typing import Iterable, TypeVar, Optional, Union, Callable, Mapping, List
 
-__all__ = ['first', 'groupby_as_dict', 'all_eq']
+__all__ = ['first', 'groupby_as_dict', 'all_eq', 'flatten', 'flat_map']
 
 T = TypeVar('T')
 K = TypeVar('K')
@@ -56,16 +57,33 @@ def groupby_as_dict(
 
 def all_eq(iter_):
     """
-    >>> all_eq(iter([3, 3, 3]))
+    >>> all_eq([3, 3, 3])
     True
-    >>> all_eq(iter([1, 1, 2]))
+    >>> all_eq([1, 1, 2])
     False
-    >>> all_eq(iter([1, 2, 1]))
+    >>> all_eq([1, 2, 1])
     False
-    >>> all_eq(iter([1, 2, 1, 1]))
+    >>> all_eq([1, 2, 1, 1])
     False
     """
+    iter_ = iter(iter_)
     try:
         return all(map(partial(operator.eq, next(iter_)), iter_))
     except StopIteration:
         return True
+
+
+def flatten(iter_):
+    """
+    >>> list(flatten([[1, 2], [3, 4]]))
+    [1, 2, 3, 4]
+    """
+    return itertools.chain.from_iterable(iter_)
+
+
+def flat_map(callable_, iter_):
+    """
+    >>> list(flat_map(lambda i: [i, i], range(2)))
+    [0, 0, 1, 1]
+    """
+    return flatten(map(callable_, iter_))
