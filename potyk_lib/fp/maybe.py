@@ -71,6 +71,15 @@ class Maybe(Generic[T]):
         else:
             raise ValueError('Нельзя вызвать unwrap для Nothing')
 
+    def get(self):
+        """
+        >>> falsy(None).get() is None
+        True
+        >>> falsy(1).get()
+        1
+        """
+        return self.val if isinstance(self, Some) else None
+
 
 nullish = Maybe.none_guess
 falsy = Maybe.falsy_guess
