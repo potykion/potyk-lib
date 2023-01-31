@@ -27,6 +27,8 @@ class If(_IfPart[T]):
     'else'
     >>> If(True).then(lambda: 2).get()
     2
+    >>> If(False).then(lambda: 2).get() is None
+    True
     """
 
     def then(self, other: VorCallable) -> _IfPart[V]: return Then.wrap(other) if self.val else self

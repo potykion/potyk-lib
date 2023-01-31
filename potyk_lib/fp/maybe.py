@@ -4,10 +4,19 @@ from typing import TypeVar, Generic, Callable, Union, Optional
 T = TypeVar('T')
 V = TypeVar('V')
 
-__all__ = ['Maybe', 'Some', 'Nothing']
+__all__ = ['Maybe', 'Some', 'Nothing', 'falsy', 'nullish']
 
 
 class Maybe(Generic[T]):
+    """
+    >>> falsy(1).if_some(lambda i: i+1).val
+    2
+    >>> falsy(None).if_some(lambda i: i+1).val is None
+    True
+    >>> falsy(None).if_nothing(lambda: 1).val
+    1
+    """
+
     def map(self, callable_: Callable[[T], V]) -> 'Maybe[V]':
         """
         >>> Some(123).map(lambda a: a+1).val
@@ -19,6 +28,32 @@ class Maybe(Generic[T]):
             return Some(callable_(self.val))
         else:
             return self
+
+    if_some = map
+
+    def and_maybe(self, maybe_callable: Callable[[T], 'Maybe[V]']) -> 'Maybe[V]':
+        """
+        >>> falsy(True).and_maybe(lambda _: falsy(1)).val
+        1
+        >>> falsy(False).and_maybe(lambda _: falsy(1)).val is None
+        True
+        """
+        if isinstance(self, Some):
+            return maybe_callable(self.val)
+        else:
+            return Nothing()
+
+    def if_nothing(self, callable_):
+        """
+        >>> Nothing().if_nothing(lambda : 1).val
+        1
+        >>> Some(2).if_nothing(lambda : 1).val
+        2
+        """
+        if isinstance(self, Some):
+            return self
+        else:
+            return Some(callable_())
 
     def __getattr__(self, item):
         """
