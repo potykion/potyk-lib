@@ -44,7 +44,7 @@ class Result(Generic[OkT, ErrT]):
         else:
             return Err(any_(cast(Err, self).value))
 
-    def or_else(self, any_: Callable[[ErrT], 'Result[NewT, NewT]']) -> 'Result[OkT, NewT]':
+    def or_else(self, any_: Callable[[ErrT], 'Result[NewT, ErrT]']) -> 'Result[OkT, NewT]':
         """
         >>> Ok(2).or_else(lambda v: Ok(v + 2))
         Ok(value=2)
@@ -56,7 +56,7 @@ class Result(Generic[OkT, ErrT]):
         else:
             return any_(cast(Err, self).value)
 
-    def and_then(self, any_: Callable[[OkT], 'Result[NewT, NewT]']) -> 'Result[NewT, ErrT]':
+    def and_then(self, any_: Callable[[OkT], 'Result[NewT, ErrT]']) -> 'Result[NewT, ErrT]':
         """
         >>> Ok(2).and_then(lambda v: Ok(v + 2))
         Ok(value=4)
